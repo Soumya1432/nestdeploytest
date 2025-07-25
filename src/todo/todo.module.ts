@@ -7,6 +7,5 @@ import { DatabaseModule } from 'src/database/database.module';
   imports: [DatabaseModule],
   controllers: [TodoController],
   providers: [TodoService],
-
 })
-export class TodoModule { }
+export class TodoModule {}
