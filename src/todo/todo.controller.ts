@@ -43,8 +43,8 @@ export class TodoController {
   }
 
   @Delete(':id')
-  async delteData(@Param('id') id: string) {
+  async deleteeData(@Param('id') id: string) {
     const deletedResponse = await this.todoService.deleteById(id);
-    return deletedResponse;
+    return deletedResponse
   }
 }

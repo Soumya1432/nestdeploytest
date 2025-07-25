@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import {  BadRequestException, Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 
@@ -44,12 +44,25 @@ export class TodoService {
         return updateById;
     }
 
-    async deleteById(id: string) {
-        const response = await this.databaseService.todo.delete({
-            where: { id },
-            data: { deletedAt: new Date() },
-        });
-        return response;
+   async deleteById(id: string) {
+    console.log("Request to delete ID:", id);
+
+    const record = await this.databaseService.todo.findFirst({
+        where: { id, deletedAt: null },
+    });
+
+    if (!record) {
+        throw new BadRequestException('Id not found or already deleted');
     }
+
+    const response = await this.databaseService.todo.update({
+        where: { id },
+        data: { deletedAt: new Date() },
+    });
+
+    console.log("Updated record:", response);
+
+    return response;
+}
 
 }
