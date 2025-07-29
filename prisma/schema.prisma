@@ -20,6 +20,60 @@ model Todo {
   description String?
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
-  deletedAt   DateTime?    @map("deleted_at") @db.Timestamp()
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamp()
 }
 
+model User {
+  id              String         @id @default(uuid()) @db.Uuid
+  fistName        String?        @map("first_name")
+  lastName        String?        @map("last_name")
+  email           String         @map("email")
+  mobileNo        String?        @unique @map("mobile_no") @db.VarChar(100)
+  otp             String?
+  otpExpiry       DateTime?      @map("otp_expiry")
+  isEmailVerified Boolean        @default(false) @map("is_email_verified")
+  role            Role           @default(USER)
+  lastLogin       DateTime?      @map("last_login")
+  refreshTokens   RefreshToken[]
+  loginAttempts   LoginAttempt[]
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updated_at      DateTime       @updatedAt @map("update_at")
+  deletedAt       DateTime?      @map("deleted_at") @db.Timestamp()
+
+  @@index([email])
+  @@map("users")
+}
+
+enum Role {
+  USER
+  ACCOUNT_MANAGER
+  ADMIN
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid()) @db.Uuid
+  token     String?  @map("token") // hased refresh token
+  userId    String   @map("user_id") @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("refresh_tokens")
+}
+
+model LoginAttempt {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String?  @map("user_id") @db.Uuid // Nullable for failed attempts before user lookup
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  email       String   @db.VarChar(100)
+  ipAddress   String?  @map("ip_address")
+  userAgent   String?  @map("user_agent")
+  success     Boolean  @default(false)
+  attemptedAt DateTime @default(now()) @map("attempted_at")
+
+  @@index([userId, attemptedAt])
+  @@index([email])
+  @@map("login_attempts")
+}
