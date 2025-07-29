@@ -45,6 +45,6 @@ export class TodoController {
   @Delete(':id')
   async deleteeData(@Param('id') id: string) {
     const deletedResponse = await this.todoService.deleteById(id);
-    return deletedResponse
+    return deletedResponse;
   }
 }
