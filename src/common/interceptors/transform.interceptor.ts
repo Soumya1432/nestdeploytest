@@ -24,7 +24,6 @@ export interface ApiResponse<T> {
     }
 }
 
-
 @Injectable()
 export class TransformInterceptor<T>
   implements NestInterceptor<T, ApiResponse<T>> {
@@ -35,7 +34,6 @@ export class TransformInterceptor<T>
     const ctx = context.switchToHttp();
     const request = ctx.getRequest();
     const successStatus = true;
-
     return next.handle().pipe(
       map((response: any) => {
         let method = request.method;

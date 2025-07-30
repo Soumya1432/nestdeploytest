@@ -4,8 +4,7 @@ import { UsersController } from './users.controller';
 import { DatabaseModule } from 'src/database/database.module';
 
 @Module({
-
-  imports:[DatabaseModule],
+  imports: [DatabaseModule],
   providers: [UsersService],
   controllers: [UsersController],
 })

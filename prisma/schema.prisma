@@ -25,10 +25,10 @@ model Todo {
 
 model User {
   id              String         @id @default(uuid()) @db.Uuid
-  firstName        String?        @map("first_name")
+  firstName       String?        @map("first_name")
   lastName        String?        @map("last_name")
-  email           String         @map("email")
-  mobileNo        String?        @unique @map("mobile_no") @db.VarChar(100)
+  email           String         @unique @map("email")
+  mobileNo        String?        @map("mobile_no") @db.VarChar(100)
   otp             String?
   otpExpiry       DateTime?      @map("otp_expiry")
   isEmailVerified Boolean        @default(false) @map("is_email_verified")

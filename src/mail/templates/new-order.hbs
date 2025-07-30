@@ -1,0 +1,19 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>New Order Notification</title>
+</head>
+<body>
+  <h1>New Order Placed</h1>
+  <p>A new order has been placed with the following details:</p>
+  <ul>
+    <li><strong>Order ID:</strong> {{orderId}}</li>
+    <li><strong>Customer:</strong> {{firstName}} {{lastName}}</li>
+    <li><strong>Total Amount:</strong> ₹{{totalAmount}}</li>
+    {% comment %} <li><strong>Payment Method:</strong> {{paymentMethod}}</li> {% endcomment %}
+    {% comment %} <li><strong>Shipping Address:</strong> {{shippingAddress.address}}, {{shippingAddress.city}}, {{shippingAddress.state}}, {{shippingAddress.zipcode}}, {{shippingAddress.country}}</li> {% endcomment %}
+  </ul>
+  <p>Please review the order in the admin panel.</p>
+</body>
+</html> 

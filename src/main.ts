@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
-
+import * as bodyParser from 'body-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
@@ -16,8 +16,8 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, documentFactory);
 
   app.use(cookieParser());
-  // app.use(bodyParser.urlencoded({ extended: true })); // Parse form-data
-  // app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: true })); // Parse form-data
+  app.use(bodyParser.json());
   app.enableCors({
     origin: [
       'http://localhost:3000',
