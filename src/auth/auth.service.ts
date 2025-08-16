@@ -654,4 +654,7 @@ export class AuthService {
       throw new UnauthorizedException(`Failed to logout: ${error.message}`);
     }
   }
+
+
+  
 }
