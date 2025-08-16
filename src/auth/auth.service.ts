@@ -655,6 +655,53 @@ export class AuthService {
     }
   }
 
+   async validateGoogleUser(profile:any, res:Response){
+    let user = await this.databaseService.user.findUnique({
+      where:{email:profile.email}
+    });
+    if(!user){
+      user = await this.databaseService.user.create({
+        data:{
+          email:profile.email,
+          firstName:profile.firstName,
+          lastName:profile.lastName,
+          isEmailVerified:true
+        }
+      })
+    }
 
-  
+
+    const tokenPayload = { id :user.id, email:user.email, role: user.role}
+
+    
+ const accessToken = this.jwtService.sign(tokenPayload, {
+    secret: jwtConstants.accessTokenSecret,
+    expiresIn: `${jwtConstants.accessTokenExpirationMs}ms`,
+  });
+
+  const refreshToken = this.jwtService.sign(tokenPayload, {
+    secret: jwtConstants.refreshTokenSecret,
+    expiresIn: `${jwtConstants.refreshTokenExpirationMs}ms`,
+  });
+
+ const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+  await this.databaseService.refreshToken.create({
+    data: {
+      userId: user.id,
+      token: hashedRefreshToken,
+      expiresAt: new Date(Date.now() + jwtConstants.refreshTokenExpirationMs),
+    },
+  });
+
+  // Store in cookies (like existing OTP login)
+  res.cookie('Authentication', accessToken, { httpOnly: true });
+  res.cookie('Refresh', refreshToken, { httpOnly: true });
+
+  return { user, accessToken, refreshToken };
+
+
+
+
+   }
+
 }

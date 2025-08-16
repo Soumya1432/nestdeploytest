@@ -6,6 +6,7 @@ import {
   UseGuards,
   Req,
   UnauthorizedException,
+  Get,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
@@ -14,6 +15,7 @@ import { SignUpDto } from './dto/signup-auth.dto';
 import { JwtRefreshAuthGuard } from './jwt-refresh-auth.guard';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { messages } from 'src/config/helpers.config';
+import { AuthGuard } from '@nestjs/passport';
 
 const entityNameSingular = 'user';
 
@@ -85,4 +87,23 @@ export class AuthController {
     const user = req.user as { id: string };
     return await this.authService.logout(user.id, res);
   }
+
+ @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async googleAuth(@Req() req) {
+    // Redirects to Google login page
+  }
+
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  async googleAuthRedirect(@Req() req: Request, @Res() res: Response) {
+    const user = req.user as any;
+
+    // 🔑 Create or update user in DB
+    const tokens = await this.authService.validateGoogleUser(user, res);
+
+    return res.json(tokens); // Or redirect to frontend with JWT
+  }
+
+
 }
